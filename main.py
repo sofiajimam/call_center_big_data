@@ -52,6 +52,14 @@ def eda(df):
     sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap='coolwarm', square=True, cbar=True)
     plt.title('Matriz de Correlación')
     plt.show()
+    
+    # Mostrar departamentos y empleados con más llamadas malas
+    print("\nDepartamentos con más llamadas malas:")
+    print(df[df['bad_call'] == 1]['department'].value_counts())
+
+    print("\nEmpleados con más llamadas malas:")
+    print(df[df['bad_call'] == 1]['employee_id'].value_counts())
+
 
 
 def correlation_analysis(df):
@@ -82,6 +90,14 @@ def apply_clustering(df, n_clusters=3):
     kmeans = KMeans(n_clusters=n_clusters, random_state=42)
     df['cluster'] = kmeans.fit_predict(df[['sentiment_level']])
     print("Centroides de los clusters:\n", kmeans.cluster_centers_)
+
+    # Graficar los clusters
+    plt.figure(figsize=(10, 6))
+    sns.scatterplot(data=df, x='sentiment_level', y='bad_call', hue='cluster', palette='viridis')
+    plt.scatter(kmeans.cluster_centers_[:, 0], [0] * n_clusters, s=100, c='red', marker='X', label='Centroides')
+    plt.title('Clustering de Nivel de Sentimiento')
+    plt.legend()
+    plt.show()
 
 def apply_classification(df, max_depth=3):
     """
